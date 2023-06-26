@@ -1,8 +1,8 @@
 import React from 'react'
 
-const AccountInfo = () => {
+const AccountInfo = ({onClickCard}) => {
     return (
-        <div className='account-info'>
+        <div className='account-info card' onClick={onClickCard}>
             <div className='account-info_texted'>
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7.54548 18.1818C7.99735 18.1818 8.36366 17.8155 8.36366 17.3636C8.36366 16.9118 7.99735 16.5455 7.54548 16.5455C7.09361 16.5455 6.72729 16.9118 6.72729 17.3636C6.72729 17.8155 7.09361 18.1818 7.54548 18.1818Z" stroke="#9B9B9B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

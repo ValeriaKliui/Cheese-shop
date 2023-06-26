@@ -64,7 +64,6 @@ p {
 
   .account-info svg:hover {
     cursor: pointer;
-
     path {
       stroke: $bright;
     }
@@ -83,10 +82,17 @@ p {
     display: flex;
     gap: 10px;
     align-items: center;
+    cursor: pointer;
+    &:hover {
+    path {
+      stroke: $bright;
+    }
+    }
   }
 }
 
 .catalog {
+  padding-bottom: 40px;
   .catalog__title {
     margin-bottom: 20px;
   }
@@ -95,6 +101,7 @@ p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
   }
 
   .catalog__items {
@@ -109,6 +116,7 @@ p {
     border: #F3F3F3 1px solid;
     padding: 20px;
     border-radius: 40px;
+    justify-content: space-between;
 
     &:hover {
       box-shadow: 0px 14px 30px 0px #0000000D;
@@ -177,23 +185,24 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    .add-icon__item {
-      background: url('./assets/icons/agd.svg') center no-repeat;
-    }
-
+    background: url('./assets/icons/add.svg') center no-repeat;
     &:hover {
-      background: linear-gradient(180deg, #89F09C 0%, #3CC755 100%);
-      border: transparent;
+      background:
+        linear-gradient(180deg, rgba(253, 147, 57, 0.1) 0%, #FD9339 100%) center center / 400px 200px no-repeat,
+        url('./assets/icons/added.svg') center no-repeat,
+        #FD9339;
 
-      .add-icon__item {
-        background: url('./assets/icons/added.svg') center no-repeat;
-      }
+      border: 1px solid transparent;
     }
   }
+  .added {
+    background:
+    linear-gradient(180deg, rgba(253, 147, 57, 0.1) 0%, #FD9339 100%) center center / 400px 200px no-repeat,
+    url('./assets/icons/added.svg') center no-repeat,
+    #FD9339;
 
-
-
+  border: 1px solid transparent;
+  }
   .with_icon {
     position: relative;
     display: flex;
@@ -209,4 +218,24 @@ p {
       left: 20px;
     }
   }
+}
+
+.drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 20;
+  background-color: rgb(255, 255, 255);
+  height: 100%;
+  width: 385px;
+  padding: 30px 0 0 35px;
+}
+.shadow {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(92, 92, 92, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
 }

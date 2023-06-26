@@ -1,16 +1,20 @@
-import React from 'react'
+import {React, useState} from 'react'
 import AddIcon from './AddIcon'
 import Favourite from './Favourite'
 
-const CatalogItem = (props) => {
+const CatalogItem = ({title, src, cost}) => {
+    const [isAdded, setIsAdded] = useState(false);
+    function onClickPlus(){
+        setIsAdded(prevState=> !prevState);
+    }
     return (
         <div className='catalog__item'>
             <div className="item__photo">
                 <Favourite />
-                <img src={props.src} alt="" className='item__img' />
+                <img src={src} alt="" className='item__img' />
             </div>
             <h3 className="item__title">
-                Мезофильная закваска Danisco CHOOZIT MM
+                {title}
             </h3>
             <div className="properties">
                 <div className="cost">
@@ -18,10 +22,10 @@ const CatalogItem = (props) => {
                         Цена:
                     </p>
                     <p className="cost__amount">
-                        12 999 руб.
+                        {cost} BYN 
                     </p>
                 </div>
-                <AddIcon />
+                <AddIcon onClickPlus={onClickPlus} isAdded={isAdded}/>
             </div>
         </div>
     )

@@ -1,10 +1,8 @@
 import React from 'react'
 
-const AddIcon = () => {
+const AddIcon = ({onClickPlus, isAdded}) => {
   return (
-    <div className='add-icon'>
-        <div className='add-icon__item'></div>
-    </div>
+    <div className={isAdded ? ['add-icon', 'added'].join(' ') : ['add-icon']} onClick={onClickPlus}></div>
   )
 }
 

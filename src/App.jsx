@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import axios from 'axios';
 import Header from './components/Header'
 import './App.scss'
 import Catalog from './components/Catalog'
@@ -10,9 +11,8 @@ function App() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(data => data.json()).then(data => {
-      setItems(data.map(item => ({ ...item, atCard: false })))
-    })
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(res=>setItems(res.data.map(item => ({ ...item, atCard: false }))))
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res=>setItemsChosen(res.data.map(item => ({ ...item, atCard: false }))))
   }, [])
 
   function handleCardClick(e) {

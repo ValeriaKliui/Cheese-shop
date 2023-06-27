@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios';
 import CloseDeleteIcon from './CloseDeleteIcon';
 import DrawerItem from './DrawerItem'
 
@@ -7,6 +8,8 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
   const drawerIsEmpty = itemsChosen.length === 0;
 
   function deleteFromCard(item, id) {
+    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${id}`);
+
     let newId = id - 1;
     setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== item.id));
     setItems(prevItems => prevItems.map((item, index) => {

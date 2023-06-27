@@ -1,8 +1,8 @@
 import React from 'react'
 
-const CloseDeleteIcon = ({deleteFromCard}) => {
+const CloseDeleteIcon = ({deleteFromCard, isClosed, setIsOpened}) => {
   return (
-    <div className='close_delete-icon' onClick={deleteFromCard}></div>
+    <div className={isClosed ? ['close_delete-icon', 'close'].join(' ') : 'close_delete-icon'} onClick={()=>isClosed ? setIsOpened(false) : deleteFromCard()}></div>
   )
 }
 

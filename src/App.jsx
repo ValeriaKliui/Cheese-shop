@@ -25,7 +25,7 @@ function App() {
       <Header setIsOpened={setIsOpened} isOpened={isOpened} />
       <hr />
       <Catalog itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems}/>
-      <Drawer isOpened={isOpened} handleCardClick={handleCardClick} itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems}/>
+      <Drawer isOpened={isOpened} setIsOpened={setIsOpened} handleCardClick={handleCardClick} itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems}/>
     </div>
   )
 }

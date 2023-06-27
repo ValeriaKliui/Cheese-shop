@@ -3,13 +3,7 @@ import CatalogItem from './CatalogItem'
 import input_pic from '../assets/icons/search_lupa.svg';
 import MyInput from './UI/input/MyInput'
 
-const Catalog = ({ itemsChosen, setItemsChosen }) => {
-  const [items, setItems] = useState([]);
-
-  useEffect(() => {
-    fetch('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(data => data.json()).then(data => setItems(data))
-  }
-    , [])
+const Catalog = ({ itemsChosen, setItemsChosen, items, setItems}) => {
 
   function addToCard(item) {
     const alreadyAdded = itemsChosen.filter(elem => elem.id === item.id);
@@ -26,7 +20,7 @@ const Catalog = ({ itemsChosen, setItemsChosen }) => {
       </div>
       <div className="catalog__items">
         {items.map(item => {
-          return <CatalogItem key={item.id} src={item.src} title={item.title} cost={item.cost} addToCard={() => addToCard(item)}/>
+          return <CatalogItem key={item.id} src={item.src} title={item.title} cost={item.cost} id={item.id} addToCard={() => addToCard(item)} setItems={setItems} items={items} atCard={item.atCard}/>
         })}
       </div>
     </div>

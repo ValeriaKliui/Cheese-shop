@@ -5,7 +5,6 @@ const DrawerItem = ({deleteFromCard, ...props}) => {
     const { item } = props;
     const { title, cost, src } = item;
 
-    
     return (
         <div className='drawer__item'>
             <div className="item__photo item__photo_drawer">

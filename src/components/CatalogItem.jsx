@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import AddIcon from './AddIcon'
 import Favourite from './Favourite'
 
-const CatalogItem = ({title, src, cost}) => {
+const CatalogItem = ({title, src, cost, addToCard}) => {
     const [isAdded, setIsAdded] = useState(false);
     function onClickPlus(){
         setIsAdded(prevState=> !prevState);
@@ -25,7 +25,7 @@ const CatalogItem = ({title, src, cost}) => {
                         {cost} BYN 
                     </p>
                 </div>
-                <AddIcon onClickPlus={onClickPlus} isAdded={isAdded}/>
+                <AddIcon onClickPlus={onClickPlus} isAdded={isAdded} addToCard={addToCard}/>
             </div>
         </div>
     )

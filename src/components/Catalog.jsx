@@ -11,6 +11,10 @@ const Catalog = () => {
     fetch('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(data => data.json()).then(data => setItems(data))}
     , [])
 
+    function addToCard(item){
+      console.log(item)
+    }
+
     
   return (
     <div className='catalog'>
@@ -22,7 +26,7 @@ const Catalog = () => {
       </div>
       <div className="catalog__items">
         {items.map(item=>{
-          return <CatalogItem key={item.id} src={item.src} title={item.title} cost={item.cost}/>
+          return <CatalogItem key={item.id} src={item.src} title={item.title} cost={item.cost} addToCard={()=>addToCard(item)}/>
         })}
       </div>
     </div>

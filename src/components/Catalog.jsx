@@ -3,16 +3,16 @@ import CatalogItem from './CatalogItem'
 import input_pic from '../assets/icons/search_lupa.svg';
 import MyInput from './UI/input/MyInput'
 
-const Catalog = () => {
+const Catalog = ({itemsChosen, setItemsChosen}) => {
   const [items, setItems] = useState([]);
-  const [itemsChosen, setItemsChosen] = useState([]);
 
   useEffect(()=>{
     fetch('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(data => data.json()).then(data => setItems(data))}
     , [])
 
     function addToCard(item){
-      console.log(item)
+      setItemsChosen(prevItems=>[...prevItems, item])
+      console.log(itemsChosen)
     }
 
     

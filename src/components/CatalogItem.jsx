@@ -13,9 +13,9 @@ const CatalogItem = ({title, src, cost, addToCard}) => {
                 <Favourite />
                 <img src={src} alt="" className='item__img' />
             </div>
-            <h3 className="item__title">
+            <p className="text item__title">
                 {title}
-            </h3>
+            </p>
             <div className="properties">
                 <div className="cost">
                     <p className="small_text cost__text">

@@ -1,4 +1,5 @@
 import { React, useState, useEffect } from 'react'
+import axios from 'axios';
 import CatalogItem from './CatalogItem'
 import input_pic from '../assets/icons/search_lupa.svg';
 import MyInput from './UI/input/MyInput'
@@ -9,7 +10,9 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems}) => {
   function addToCard(item) {
     // const alreadyAdded = itemsChosen.filter(elem => elem.id === item.id);
     // alreadyAdded.length > 0 ? setItemsChosen(prevItems => prevItems.filter(elem => elem.id != item.id)) : 
-     setItemsChosen(prevItems => [...prevItems, item]);
+      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', item)
+        .then(res => setItemsChosen(prev => [...prev, res.data]))  
+// setItemsChosen(prevItems => [...prevItems, item]);
   }
 
   function handleChange(e){

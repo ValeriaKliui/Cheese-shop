@@ -11,11 +11,11 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
     console.log(index)
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}`);
 
-    let newId = index - 1;
-    setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== item.id));
-    setItems(prevItems => prevItems.map((item, index) => {
-      return index === newId ? { ...item, atCard: !item.atCard } : item
-    }))
+    // let newId = index - 1;
+    setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== index));
+    // setItems(prevItems => prevItems.map((item, index) => {
+    //   return index === newId ? { ...item, atCard: !item.atCard } : item
+    // }))
   }
 
   return (
@@ -36,7 +36,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
                 </p>
                 :
                 <div className="items">
-                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => {console.log(item, index); deleteFromCard(item, index)}} />)}
+                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item, item.id)}} />)}
                 </div>
             }
           </div>

@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(res=>setItems(res.data.map(item => ({ ...item, atCard: false }))))
-    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res=>setItemsChosen(res.data.map(item => ({ ...item, atCard: false }))))
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res=>setItemsChosen(res.data.map(item => ({ ...item }))))
   }, [])
 
   function handleCardClick(e) {

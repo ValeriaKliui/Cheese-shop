@@ -1,8 +1,8 @@
 import React from 'react'
 
-const AddIcon = ({onClickPlus, atCard, addToCard}) => {
+const AddIcon = ({atCard, addToCard}) => {
   return (
-    <div className={atCard ? ['add-icon', 'added'].join(' ') : ['add-icon']} onClick={()=>{onClickPlus(); addToCard()}}></div>
+    <div className={atCard ? ['add-icon', 'added'].join(' ') : ['add-icon']} onClick={()=>{addToCard()}}></div>
   )
 }
 

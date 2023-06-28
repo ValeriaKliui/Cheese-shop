@@ -7,8 +7,9 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems}) => {
   const [inputSearch, setInputSearch] = useState('');
 
   function addToCard(item) {
-    const alreadyAdded = itemsChosen.filter(elem => elem.id === item.id);
-    alreadyAdded.length > 0 ? setItemsChosen(prevItems => prevItems.filter(elem => elem.id != item.id)) : setItemsChosen(prevItems => [...prevItems, item]);
+    // const alreadyAdded = itemsChosen.filter(elem => elem.id === item.id);
+    // alreadyAdded.length > 0 ? setItemsChosen(prevItems => prevItems.filter(elem => elem.id != item.id)) : 
+     setItemsChosen(prevItems => [...prevItems, item]);
   }
 
   function handleChange(e){

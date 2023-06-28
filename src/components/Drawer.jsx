@@ -8,6 +8,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
   const drawerIsEmpty = itemsChosen.length === 0;
 
   function deleteFromCard(item, id) {
+    console.log(id)
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${id}`);
 
     let newId = id - 1;

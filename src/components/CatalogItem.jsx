@@ -5,12 +5,12 @@ import Favourite from './Favourite'
 
 const CatalogItem = ({ title, src, cost, addToCard, id, atCard,  setItems }) => {
     function onClickPlus() {
-        axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', {title, src, cost, atCard});
+        // axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', {title, src, cost, atCard});
 
-        let newId = +(id - 1);
-        setItems(prevItems => prevItems.map((item, index) => {
-            return index === newId ? { ...item, atCard: !item.atCard } : item
-        }))
+        // let newId = +(id - 1);
+        // setItems(prevItems => prevItems.map((item, index) => {
+        //     return index === newId ? { ...item, atCard: !item.atCard } : item
+        // }))
         
     }
 

@@ -11,8 +11,12 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems}) => {
     const alreadyAdded = itemsChosen.filter((elem)=>elem.title === item.title).length>0;
     if (!alreadyAdded) {
      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', {...item, atCard: !item.atCard}).then(res => setItemsChosen(prev => [...prev, res.data]));
-  }}
-
+  }
+  setItems(prevItems=>prevItems.map((elem, index)=> {
+    console.log(index , item)
+    return item.title === elem.title ? {...elem, atCard: !elem.atCard} : elem
+  }))
+}
   function handleChange(e){
     setInputSearch(e);
   }

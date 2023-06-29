@@ -9,14 +9,15 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
 
   function deleteFromCard(index, item) {
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}` );
-    setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== index));
+    setItemsChosen(prevItems => prevItems.filter(elem => {
+      return elem.id !== index}));
     setItems(prevItems=>prevItems.map((elem, index)=> {
-      return item.title === elem.title ? {...elem, atCard: !elem.atCard} : elem
+      if (item.title === elem.title){
+        if (elem.atCard !== item.atCard) return elem;
+        else return  {...elem, atCard: !elem.atCard};
+      }
+      else return elem
     }))
-  }
-
-  function clearCard(){
-    
   }
 
   return (

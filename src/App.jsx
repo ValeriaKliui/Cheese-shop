@@ -11,8 +11,28 @@ function App() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(res=>setItems(res.data.map(item => ({ ...item, atCard: false }))))
-    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res=>setItemsChosen(res.data.map(item => ({ ...item }))))
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems').then(res => setItems(res.data.map(item => ({ ...item, atCard: false }))))
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res => setItemsChosen(res.data.map(item => item)))
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card').then(res => {
+      if (res.data.length > 0) {
+        console.log(res.data.length)
+
+        itemsChosen.map(elem => {
+          if (items.filter(elem1 => elem1.title === elem.title).length > 0) {
+            setItems(prevItems => {
+              return prevItems.map(prevItem => {
+                if (prevItem.title === elem.title) {
+                  console.log({ ...prevItem, atCard: !prevItem.atCard })
+                  return { ...prevItem, atCard: !prevItem.atCard }
+                }
+                else return prevItem;
+              })
+            })
+          }
+          else return elem
+        })
+      }
+    })
   }, [])
 
   function handleCardClick(e) {
@@ -24,8 +44,8 @@ function App() {
     <div className='wrapper'>
       <Header setIsOpened={setIsOpened} isOpened={isOpened} />
       <hr />
-      <Catalog itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems}/>
-      <Drawer isOpened={isOpened} setIsOpened={setIsOpened} handleCardClick={handleCardClick} itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems}/>
+      <Catalog itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems} />
+      <Drawer isOpened={isOpened} setIsOpened={setIsOpened} handleCardClick={handleCardClick} itemsChosen={itemsChosen} setItemsChosen={setItemsChosen} items={items} setItems={setItems} />
     </div>
   )
 }

@@ -7,20 +7,24 @@ import MyInput from './UI/input/MyInput'
 const Catalog = ({ itemsChosen, setItemsChosen, items, setItems}) => {
   const [inputSearch, setInputSearch] = useState('');
 
-  function addToCard(item, id) {
+  function addToCard(item) {
     const unAdded = !itemsChosen.filter((elem)=>elem.title === item.title).length>0;
     if (unAdded) {
      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', {...item, atCard: !item.atCard}).then(res => setItemsChosen(prev => [...prev, res.data]));
   }
-  setItems(prevItems=>prevItems.map((elem, index)=> {
-    return item.title === elem.title ? {...elem, atCard: !elem.atCard} : elem
-  }))
-  setItemsChosen(prevItems=>prevItems.map((elem)=> {
-    return item.title === elem.title ? {...elem, atCard: !elem.atCard} : elem
-  }))
+  if (!unAdded) {
+    // axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${1}` )
+    setItems(prevItems => prevItems.map((elem, index) => {
+      if (item.title === elem.title) {
+        console.log(item, elem)
+        if (elem.atCard !== item.atCard) return elem;
+        else return { ...elem, atCard: !elem.atCard };
+      }
+      else return elem
+    }))  }
 }
-console.log(items[0], itemsChosen[0])
-  function handleChange(e){
+
+function handleChange(e){
     setInputSearch(e);
   }
   
@@ -38,7 +42,7 @@ console.log(items[0], itemsChosen[0])
       </div>
       <div className="catalog__items">
         {filteredItems().map((item, index) => {
-          return <CatalogItem key={item.title} src={item.src} title={item.title} cost={item.cost} id={item.id} addToCard={() => addToCard(item, index)} setItems={setItems} items={items} atCard={item.atCard}/>
+          return <CatalogItem key={item.title} src={item.src} title={item.title} cost={item.cost} id={item.id} addToCard={() => addToCard(item)} setItems={setItems} items={items} atCard={item.atCard}/>
         })}
       </div>
     </div>

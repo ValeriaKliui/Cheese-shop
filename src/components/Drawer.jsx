@@ -8,13 +8,15 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
   const drawerIsEmpty = itemsChosen.length === 0;
 
   function deleteFromCard(index, item) {
-    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}` );
+    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}`);
     setItemsChosen(prevItems => prevItems.filter(elem => {
-      return elem.id !== index}));
-    setItems(prevItems=>prevItems.map((elem, index)=> {
-      if (item.title === elem.title){
+      return elem.id !== index
+    }));
+
+    setItems(prevItems => prevItems.map((elem, index) => {
+      if (item.title === elem.title) {
         if (elem.atCard !== item.atCard) return elem;
-        else return  {...elem, atCard: !elem.atCard};
+        else return { ...elem, atCard: !elem.atCard };
       }
       else return elem
     }))
@@ -26,10 +28,10 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
         <div className="shadow" onClick={handleCardClick}>
           <div className={drawerIsEmpty ? ['drawer', 'drawer_empty'].join(' ') : 'drawer'}>
             <div className="drawer__top">
-            <h2 className="title catalog__title">
-              Корзина
-            </h2>
-            <CloseDeleteIcon isClosed={true} setIsOpened={setIsOpened}/>
+              <h2 className="title catalog__title">
+                Корзина
+              </h2>
+              <CloseDeleteIcon isClosed={true} setIsOpened={setIsOpened} />
             </div>
             {
               drawerIsEmpty ?
@@ -38,7 +40,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
                 </p>
                 :
                 <div className="items">
-                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item.id, item)}} />)}
+                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item.id, item) }} />)}
                 </div>
             }
           </div>

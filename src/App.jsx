@@ -10,36 +10,36 @@ function App() {
   const [itemsChosen, setItemsChosen] = useState([]);
   const [items, setItems] = useState([]);
 
-let itemsAddedEarlier = 0;
+  let itemsAddedEarlier = 0;
 
   useEffect(() => {
-    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card')
-    .then(res => {
-      setItemsChosen(res.data.map(item => item));
-      return axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems')
-    })
-    .then(res => {
-      setItems(res.data.map(item => ({ ...item})))
-      itemsAddedEarlier = res.data;
-      return axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card')
-  }).then(res => {
-    if (res.data.length > 0) {
-      res.data.map(elem => {
-        if (itemsAddedEarlier.filter(elem1 => elem1.title === elem.title).length > 0) {
-          setItems(prevItems => {
-            return prevItems.map(prevItem => {
-              if (prevItem.title === elem.title) {
-                return { ...prevItem, atCard: true }
-              }
-              else return prevItem;
-            })
+    axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card',)
+      .then(res => {
+        setItemsChosen(res.data.map(item => item));
+        return axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems')
+      })
+      .then(res => {
+        setItems(res.data.map(item => ({ ...item })))
+        itemsAddedEarlier = res.data;
+        return axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card')
+      }).then(res => {
+        if (res.data.length > 0) {
+          res.data.map(elem => {
+            if (itemsAddedEarlier.filter(elem1 => elem1.title === elem.title).length > 0) {
+              setItems(prevItems => {
+                return prevItems.map(prevItem => {
+                  if (prevItem.title === elem.title) {
+                    return { ...prevItem, atCard: true }
+                  }
+                  else return prevItem;
+                })
+              })
+            }
+            else return elem
           })
         }
-        else return elem
+
       })
-    }
-    
-  })
   }, [])
 
   function handleCardClick(e) {

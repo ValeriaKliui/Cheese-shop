@@ -3,12 +3,12 @@ import axios from 'axios'
 import AddIcon from './AddIcon'
 import Favourite from './Favourite'
 
-const CatalogItem = ({ title, src, cost, addToCard, id, atCard,  setItems }) => {
+const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourite }) => {
 
     return (
         <div className='catalog__item'>
             <div className="item__photo">
-                <Favourite />
+                <Favourite addToFavourite={addToFavourite} liked={liked} />
                 <img src={src} alt="" className='item__img' />
             </div>
             <p className="text item__title">

@@ -12,6 +12,10 @@ h1 {
 
 p {
   font-size: 14px;
+
+  @media (max-width: 640px) {
+    font-size: 11px;
+  }
 }
 
 h1,
@@ -41,6 +45,16 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 1200px) {
+    padding: 25px;
+  }
+
+  @media (max-width: 640px) {
+    padding: 20px 20px 15px 20px;
+    flex-direction: column;
+    gap: 20px;
+  }
 }
 
 .logo {
@@ -48,11 +62,20 @@ p {
   gap: 20px;
   align-items: center;
   flex: 0 0 400px;
+
+  @media (max-width: 640px) {
+    flex: unset;
+    justify-content: space-between;
+  }
 }
 
 .logo__img {
   display: block;
   flex: 0 0 40px;
+
+  @media (max-width: 640px) {
+    flex: 0;
+  }
 }
 
 .logo__title {
@@ -97,10 +120,22 @@ p {
 
 .catalog {
   padding-bottom: 40px;
+
+  @media (max-width: 1200px) {
+    padding: 30px;
+  }
+
+  @media (max-width: 640px) {
+    padding: 13px;
+  }
 }
 
 .catalog__title {
   margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    align-self: center;
+  }
 }
 
 .catalog__top {
@@ -108,12 +143,25 @@ p {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .catalog__items {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .catalog__item {
@@ -125,12 +173,13 @@ p {
   justify-content: space-between;
   transition: 0.05s all ease-in-out;
   gap: 5px;
-
-  &:hover {
-    box-shadow: 0px 10px 10px 0px #0000000D;
-    cursor: pointer;
-    transform: scale(1.01);
-    transform: translateY(-3px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      box-shadow: 0px 10px 10px 0px #0000000D;
+      cursor: pointer;
+      transform: scale(1.01);
+      transform: translateY(-3px);
+    }
   }
 }
 
@@ -153,8 +202,13 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &:hover {
+  svg {
+    fill: none;
+    stroke: $light-content;
+    stroke-width: 30px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
     background-color: $favourite-bg;
     border: 1px solid transparent;
   }
@@ -164,16 +218,24 @@ p {
     stroke: transparent;
   }
 }
+}
 
-.favourite__icon svg {
-  fill: none;
-  stroke: $light-content;
-  stroke-width: 30px;
+.liked {
+    background-color: $favourite-bg;
+    border: 1px solid transparent;
+  svg path {
+    fill: $favourite-heart;
+    stroke: transparent;
+  }
 }
 
 .item__img {
   width: 180px;
   display: block;
+
+  @media (max-width: 1200px) {
+    width: 240px;
+  }
 }
 
 .properties {
@@ -196,14 +258,15 @@ p {
   justify-content: center;
   background: url('./assets/icons/add.svg') center no-repeat;
 
-  &:hover {
-    background:
-      linear-gradient(180deg, rgba(253, 147, 57, 0.1) 0%, #FD9339 100%) center center / 400px 200px no-repeat,
-      url('./assets/icons/added.svg') center no-repeat,
-      #FD9339;
-
-    border: 1px solid transparent;
-  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background:
+        linear-gradient(180deg, rgba(253, 147, 57, 0.1) 0%, #FD9339 100%) center center / 400px 200px no-repeat,
+        url('./assets/icons/added.svg') center no-repeat,
+        #FD9339;
+      border: 1px solid transparent;
+    }
+    }
 }
 
 .added {
@@ -211,7 +274,6 @@ p {
     linear-gradient(180deg, rgba(253, 147, 57, 0.1) 0%, #FD9339 100%) center center / 400px 200px no-repeat,
     url('./assets/icons/added.svg') center no-repeat,
     #FD9339;
-
   border: 1px solid transparent;
 }
 
@@ -243,20 +305,28 @@ p {
   padding: 30px 35px;
   display: flex;
   flex-direction: column;
+  @media (max-width: 640px) {
+    width: unset;
+    padding: 30px 25px;
+  }
 }
+
 .drawer_empty {
   gap: 30%;
 }
+
 .drawer_empty__text {
   display: flex;
   justify-content: center;
 }
+
 .drawer__top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
+
 .items {
   display: flex;
   flex-direction: column;
@@ -297,14 +367,16 @@ p {
   font-size: 14px;
   font-weight: 700;
 }
+
 .close_delete-icon {
   position: relative;
-    cursor: pointer;
-    border: $border 1px solid;
-    border-radius: 8px;  
-    width: 32px;
-    height: 32px;
+  cursor: pointer;
+  border: $border 1px solid;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
 }
+
 .close_delete-icon::before {
   content: '';
   width: 32px;
@@ -315,6 +387,7 @@ p {
   background: url('./assets/icons/add.svg') center no-repeat;
   transform: rotate(45deg);
 }
+
 .close {
   border: 1px solid transparent;
   transform: scale(1.5);

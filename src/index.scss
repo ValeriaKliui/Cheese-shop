@@ -3,6 +3,9 @@
 body {
     background-color: $bg;
     padding: 60px 0;
+    @media (max-width: 1200px) {
+        padding: 0;
+    }
 }
 #root {
     max-width: 1280px;

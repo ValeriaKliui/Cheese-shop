@@ -13,7 +13,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
       return elem.id !== index
     }));
 
-    setItems(prevItems => prevItems.map((elem, index) => {
+    setItems(prevItems => prevItems.map((elem) => {
       if (item.title === elem.title) {
         if (elem.atCard !== item.atCard) return elem;
         else return { ...elem, atCard: !elem.atCard };

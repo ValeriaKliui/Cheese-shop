@@ -9,6 +9,17 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems, itemsLiked, set
 
 
   function addToCard(item) {
+    const alreadyAtCard = itemsChosen.find(elem => +elem.parentId === +item.id);
+    if (alreadyAtCard) {
+      itemsChosen.map( elem => +elem.parentId === +item.id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
+      setItemsChosen(prevItems => prevItems.filter(elem => +elem.parentId !== +item.id));
+      setItems(prevItems => prevItems.map(elem => +elem.id === +item.id ? {...elem, atCard: !elem.atCard} : elem));
+    }
+    else {
+      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', {...item, parentId: item.id}).then(res=>setItemsChosen(prevItems=>[...prevItems, res.data]))
+      setItems(prevItems => prevItems.map(elem => +elem.id === +item.id ? {...elem, atCard: !elem.atCard} : elem));
+    }
+
     // const notAtCard = !itemsChosen.filter((elem) => elem.title === item.title).length > 0;
     // const atCard = !notAtCard;
     // if (notAtCard) {
@@ -39,8 +50,8 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems, itemsLiked, set
     //     })
     //   })
     // }
-    console.log(item)
-    console.log(itemsChosen.map(elem=>elem.id === item.id))
+    // console.log(item)
+    // console.log(itemsChosen.map(elem=>elem.id === item.id))
   }
 
   // function addToFavourite (item) {
@@ -95,9 +106,9 @@ const Catalog = ({ itemsChosen, setItemsChosen, items, setItems, itemsLiked, set
       <div className="catalog__items">
         {filteredItems().map((item) => {
           return <CatalogItem key={item.title}
-          addToCard={() => addToCard(item)} atCard={item.atCard}  
-          setItems={setItems} items={items} 
-          liked={item.liked} itemsLiked={itemsLiked} setItemsLiked={setItemsLiked} addToFavourite={() => addToFavourite(item)} {...item}/> 
+            addToCard={() => addToCard(item)} atCard={item.atCard}
+            setItems={setItems} items={items}
+            liked={item.liked} itemsLiked={itemsLiked} setItemsLiked={setItemsLiked} addToFavourite={() => addToFavourite(item)} {...item} />
         })}
       </div>
     </div>

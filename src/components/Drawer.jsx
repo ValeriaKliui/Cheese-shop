@@ -7,19 +7,23 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
 
   const drawerIsEmpty = itemsChosen.length === 0;
 
-  function deleteFromCard(index, item) {
-    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}`);
-    setItemsChosen(prevItems => prevItems.filter(elem => {
-      return elem.id !== index
-    }));
+  function deleteFromCard(item) {
+    setItemsChosen(prevItems=> prevItems.filter(elem=> elem.id !== item.id))
+    setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? {...elem, atCard: !elem.atCard} : elem));
+    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
 
-    setItems(prevItems => prevItems.map((elem) => {
-      if (item.title === elem.title) {
-        if (elem.atCard !== item.atCard) return elem;
-        else return { ...elem, atCard: !elem.atCard };
-      }
-      else return elem
-    }))
+    // axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${index}`);
+    // setItemsChosen(prevItems => prevItems.filter(elem => {
+    //   return elem.id !== index
+    // }));
+
+    // setItems(prevItems => prevItems.map((elem) => {
+    //   if (item.title === elem.title) {
+    //     if (elem.atCard !== item.atCard) return elem;
+    //     else return { ...elem, atCard: !elem.atCard };
+    //   }
+    //   else return elem
+    // }))
   }
 
   return (
@@ -40,7 +44,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
                 </p>
                 :
                 <div className="items">
-                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item.id, item) }} />)}
+                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item) }} />)}
                 </div>
             }
           </div>

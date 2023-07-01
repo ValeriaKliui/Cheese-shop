@@ -2,8 +2,7 @@ import {React, useState} from 'react'
 import AccountInfo from './AccountInfo'
 import Logo from './Logo'
 
-const Header = ({isOpened, setIsOpened}) => {
-
+const Header = ({setIsOpened}) => {
     function onClickCard(){
         setIsOpened(prevState=>!prevState);
     }

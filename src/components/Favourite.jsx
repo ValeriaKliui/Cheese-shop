@@ -1,6 +1,7 @@
 import React from 'react'
 
 const Favourite = ({ liked, addToFavourite }) => {
+    
     return (
         <div className={liked ? ['favourite__icon', 'liked'].join(' ') : ['favourite__icon']} onClick={()=>{addToFavourite()}}>
             <svg height="15px" width="15px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"

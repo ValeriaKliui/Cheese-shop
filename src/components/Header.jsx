@@ -1,15 +1,21 @@
-import {React, useState} from 'react'
+import {useContext} from 'react'
+import AppContext from '../AppContext';
+import { Link } from 'react-router-dom'
 import AccountInfo from './AccountInfo'
 import Logo from './Logo'
 
-const Header = ({setIsOpened}) => {
-    function onClickCard(){
-        setIsOpened(prevState=>!prevState);
+const Header = () => {
+    const {setIsOpened} = useContext(AppContext);
+
+    function onClickCard() {
+        setIsOpened(prevState => !prevState);
     }
     return (
         <header className='header'>
-            <Logo />
-            <AccountInfo onClickCard={onClickCard}/>
+            <Link to="/">
+                <Logo />
+            </ Link>
+            <AccountInfo onClickCard={onClickCard} />
         </header>
     )
 }

@@ -62,7 +62,6 @@ p {
   gap: 20px;
   align-items: center;
   flex: 0 0 400px;
-
   @media (max-width: 640px) {
     flex: unset;
     justify-content: space-between;
@@ -76,6 +75,9 @@ p {
   @media (max-width: 640px) {
     flex: 0;
   }
+}
+.logo__link {
+  display: flex;
 }
 
 .logo__title {

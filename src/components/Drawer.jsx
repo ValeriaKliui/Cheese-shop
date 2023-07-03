@@ -1,17 +1,12 @@
-import React from 'react'
-import axios from 'axios';
+import {useContext} from 'react'
+import AppContext from '../AppContext';
 import CloseDeleteIcon from './CloseDeleteIcon';
 import DrawerItem from './DrawerItem'
 
-const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsChosen, setItems }) => {
+const Drawer = () => {
 
+  const {itemsChosen, isOpened, setIsOpened, handleCardClick, deleteFromCard} = useContext(AppContext);
   const drawerIsEmpty = itemsChosen.length === 0;
-
-  function deleteFromCard(item) {
-    setItemsChosen(prevItems=> prevItems.filter(elem=> elem.id !== item.id))
-    setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? {...elem, atCard: !elem.atCard} : elem));
-    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
-  }
 
   return (
     <>
@@ -31,7 +26,7 @@ const Drawer = ({ isOpened, setIsOpened, handleCardClick, itemsChosen, setItemsC
                 </p>
                 :
                 <div className="items">
-                  {itemsChosen.map((item, index) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item) }} />)}
+                  {itemsChosen.map((item) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item) }} />)}
                 </div>
             }
           </div>

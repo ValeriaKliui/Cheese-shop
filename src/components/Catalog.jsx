@@ -1,10 +1,10 @@
-import { React, useState, useEffect } from 'react'
-import axios from 'axios';
-import CatalogItem from './CatalogItem'
+import {useContext} from 'react'
+import AppContext from '../AppContext';
 import input_pic from '../assets/icons/search_lupa.svg';
 import MyInput from './UI/input/MyInput'
 
-const Catalog = ({renderItems, inputSearch, handleChange }) => {
+const Catalog = () => {
+  const {renderItems, handleChange, inputSearch, items} = useContext(AppContext);
 
   return (
     <div className='catalog'>
@@ -15,7 +15,7 @@ const Catalog = ({renderItems, inputSearch, handleChange }) => {
         <MyInput src={input_pic} placeholder='Поиск...' value={inputSearch} onChange={(e) => handleChange(e.target.value)} />
       </div>
       <div className="catalog__items">
-        {renderItems()}
+        {renderItems(items)}
       </div>
     </div>
   )

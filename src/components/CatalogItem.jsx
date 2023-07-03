@@ -1,5 +1,3 @@
-import { React, useState } from 'react'
-import axios from 'axios'
 import AddIcon from './AddIcon'
 import FavouriteIcon from './FavouriteIcon'
 import ContentLoader from "react-content-loader"
@@ -10,9 +8,9 @@ const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourit
             {loading ?
                 <ContentLoader
                     speed={2}
-                    width={400}
+                    width='120%'
                     height={200}
-                    viewBox="0 0 400 200"
+                    viewBox="0 0 200 200"
                     backgroundColor="#f3f3f3"
                     foregroundColor="#ecebeb"
                 >

@@ -1,4 +1,3 @@
-import React from 'react'
 import CloseDeleteIcon from './CloseDeleteIcon';
 
 const DrawerItem = ({deleteFromCard, ...props}) => {

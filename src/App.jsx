@@ -77,7 +77,9 @@ function App() {
     const alreadyAtCard = itemsChosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
       itemsChosen.map(elem => +elem.parentId === +id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
-      isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: !elem.atCard } : elem)) : null;
+      !isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
+      console.log(item, id)
+      isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
       setItemsChosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
     }
@@ -87,6 +89,22 @@ function App() {
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
     }
   }
+  function addToFavourite(item, id) { 
+    const isFavourite = item.parentId;
+    const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +id);
+    console.log(alreadyLiked)
+    if (alreadyLiked) {
+      itemsLiked.map(elem => +elem.parentId === +id ? axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`) : null);
+      isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, liked: !elem.liked } : elem)) : null;
+      setItemsLiked (prevItems => prevItems.filter(elem => +elem.parentId !== +id));
+      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
+    }
+    else {
+      axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/liked', { ...item, parentId: id, liked: true }).then(res => setItemsLiked(prevItems => [...prevItems, res.data]))
+      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
+    }
+}
+
 
 
   // function addToFavourite(item) {

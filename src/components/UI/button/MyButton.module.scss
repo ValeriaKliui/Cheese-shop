@@ -9,7 +9,8 @@
     color: $light-border;
     cursor: pointer;
     transition: 0.2s all ease;
-
+    max-width: 330px;
+    align-self: center;
     &:hover {
         background-color: $bright-dark;
     }

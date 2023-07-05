@@ -17,6 +17,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [inputSearch, setInputSearch] = useState('');
   const [totalPrice, setTotalPrice] = useState(0);
+  const [ordered, setOrdered] = useState(false);
 
   useEffect(() => {
     async function fetch() {
@@ -77,11 +78,15 @@ function App() {
   }
 
   function addToCard(item, id) {
+    setOrdered(false)
     const isFavourite = item.parentId;
     const alreadyAtCard = itemsChosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
-      setTotalPrice(prevItems => prevItems - +item.cost);
-      itemsChosen.map(elem => +elem.parentId === +id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
+      setTotalPrice(() => {
+        const costsAtCard = itemsChosen.map(e => e.cost);
+        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
+      })
+            itemsChosen.map(elem => +elem.parentId === +id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
       !isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
       isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
       setItemsChosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
@@ -89,12 +94,16 @@ function App() {
       console.log(Number(item.cost))
     }
     else {
-      setTotalPrice(prevItems => prevItems + +item.cost);
+      setTotalPrice(() => {
+        const costsAtCard = itemsChosen.map(e => e.cost);
+        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) + +item.cost;
+      })
       axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', { ...item, parentId: id }).then(res => setItemsChosen(prevItems => [...prevItems, res.data]))
       setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: !elem.atCard } : elem));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
     }
   }
+  
   function addToFavourite(item, id) {
     const isFavourite = item.parentId;
     const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +id);
@@ -114,13 +123,18 @@ function App() {
     setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
     setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? { ...elem, atCard: !elem.atCard } : elem));
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
-    setTotalPrice(prevItems => prevItems - +item.cost);
+    setTotalPrice(() => {
+      const costsAtCard = itemsChosen.map(e => e.cost);
+      return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
+    })  
   }
 
   return (
     <AppContext.Provider value={{
       items, itemsChosen, itemsLiked, setIsOpened, isOpened, totalPrice,
-      handleCardClick, deleteFromCard, renderItems, handleChange
+      handleCardClick, deleteFromCard, renderItems, handleChange,
+      setItemsChosen, setItems, setItemsLiked, setTotalPrice,
+      ordered, setOrdered
     }}>
       <div className='wrapper'>
         <Header />

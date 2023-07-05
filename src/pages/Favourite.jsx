@@ -2,6 +2,8 @@ import {useContext} from 'react'
 import AppContext from '../AppContext';
 import MyInput from '../components/UI/input/MyInput'
 import input_pic from '../assets/icons/search_lupa.svg';
+import no_fav from '../assets/icons/no-fav.png';
+import Info from '../components/Info'
 
 const Favourite = () => {
     const {renderItems, handleChange, inputSearch, itemsLiked} = useContext(AppContext);
@@ -14,9 +16,12 @@ const Favourite = () => {
                 </h2>
                 <MyInput src={input_pic} placeholder='Поиск...' value={inputSearch} onChange={(e) => handleChange(e.target.value)} />
             </div>
-            <div className="catalog__items">
+            <>
+            {itemsLiked.length ?  <div className="catalog__items">
                 {renderItems(itemsLiked)}
             </div>
+            : <Info src={no_fav} title='Закладок нет :(' subtext='Вы ничего не добавляли в закладки'/>}
+            </>
         </div>
         )
 }

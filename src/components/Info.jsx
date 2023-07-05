@@ -1,20 +1,20 @@
 import MyButton from "./UI/button/MyButton"
 import { useContext } from 'react'
 import AppContext from '../AppContext';
-import { useEffect } from "react";
 
 const Info = ({ title, subtext, src }) => {
-  const { setIsOpened,isOpened } = useContext(AppContext);
-  useEffect(()=>{
-    console.log('j')
-  }, [isOpened]);
+  const { setIsOpened } = useContext(AppContext);
+
+  function closeDrawer() {
+    setIsOpened(false)
+  }
 
   return (
     <div className='info'>
-      <img src={src} alt="" />
+      <img className='info__pic' src={src} alt="" />
       <h3>{title}</h3>
       <p className="subtext info__subtext">{subtext}</p>
-      <MyButton text='Вернуться назад' onClick={console.log('j')} />
+      <MyButton text='Вернуться назад' onClick={closeDrawer} />
     </div>
   )
 }

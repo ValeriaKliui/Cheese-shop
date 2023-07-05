@@ -16,6 +16,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [inputSearch, setInputSearch] = useState('');
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     async function fetch() {
@@ -31,7 +32,6 @@ function App() {
       setItemsLiked(likedResponse.data.map(elem => {
         const itemAtCard = itemsAtCardID.includes(elem.parentId);
         const itemLiked = likedItemsID.includes(elem.parentId);
-        console.log(itemAtCard,itemLiked)
         if (itemAtCard && itemLiked) return { ...elem, atCard: true, liked: true };
         if (!itemAtCard && itemLiked) return { ...elem, liked: true, atCard: false };
         if (itemAtCard && !itemLiked) return { ...elem, atCard: true, liked: false };
@@ -45,6 +45,10 @@ function App() {
         if (itemAtCard && !itemLiked) return { ...elem, atCard: true, liked: false };
         return elem
       }));
+      setTotalPrice(() => {
+        const costsAtCard = cardResponse.data.map(e => e.cost);
+        return costsAtCard.reduce((accum, curr) => accum + +curr, 0);
+      })
     }
     fetch();
   }, [])
@@ -76,60 +80,46 @@ function App() {
     const isFavourite = item.parentId;
     const alreadyAtCard = itemsChosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
+      setTotalPrice(prevItems => prevItems - +item.cost);
       itemsChosen.map(elem => +elem.parentId === +id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
       !isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
-      console.log(item, id)
       isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
       setItemsChosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
+      console.log(Number(item.cost))
     }
     else {
+      setTotalPrice(prevItems => prevItems + +item.cost);
       axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', { ...item, parentId: id }).then(res => setItemsChosen(prevItems => [...prevItems, res.data]))
       setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: !elem.atCard } : elem));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
     }
   }
-  function addToFavourite(item, id) { 
+  function addToFavourite(item, id) {
     const isFavourite = item.parentId;
     const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +id);
-    console.log(alreadyLiked)
     if (alreadyLiked) {
       itemsLiked.map(elem => +elem.parentId === +id ? axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`) : null);
       isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, liked: !elem.liked } : elem)) : null;
-      setItemsLiked (prevItems => prevItems.filter(elem => +elem.parentId !== +id));
+      setItemsLiked(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
     }
     else {
       axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/liked', { ...item, parentId: id, liked: true }).then(res => setItemsLiked(prevItems => [...prevItems, res.data]))
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
     }
-}
-
-
-
-  // function addToFavourite(item) {
-  //   const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +item.id);
-  //   if (alreadyLiked) {
-  //     itemsLiked.map(elem => +elem.parentId === +item.id ? axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`) : null);
-  //     setItemsLiked(prevItems => prevItems.filter(elem => +elem.parentId !== +item.id));
-  //     setItems(prevItems => prevItems.map(elem => +elem.id === +item.id ? { ...elem, liked: !elem.liked } : elem));
-  //   }
-  //   else {
-  //     axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/liked', { ...item, parentId: item.id }).then(res => setItemsLiked(prevItems => [...prevItems, res.data]))
-  //     setItems(prevItems => prevItems.map(elem => +elem.id === +item.id ? { ...elem, liked: !elem.liked } : elem));
-  //   }
-  // }
-
+  }
 
   function deleteFromCard(item) {
     setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
     setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? { ...elem, atCard: !elem.atCard } : elem));
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
+    setTotalPrice(prevItems => prevItems - +item.cost);
   }
 
   return (
     <AppContext.Provider value={{
-      items, itemsChosen, itemsLiked, setIsOpened, isOpened,
+      items, itemsChosen, itemsLiked, setIsOpened, isOpened, totalPrice,
       handleCardClick, deleteFromCard, renderItems, handleChange
     }}>
       <div className='wrapper'>

@@ -8,8 +8,8 @@ import card from '../assets/icons/card.png'
 import order from '../assets/icons/order.png'
 
 const Drawer = () => {
-  const { itemsChosen, isOpened, setIsOpened, handleCardClick, deleteFromCard, ordered } = useContext(AppContext);
-  const drawerIsEmpty = itemsChosen.length === 0;
+  const { itemsChoosen, isOpened, setIsOpened, handleCardClick, deleteFromCard, ordered } = useContext(AppContext);
+  const drawerIsEmpty = itemsChoosen.length === 0;
 
   return (
     <>
@@ -26,7 +26,7 @@ const Drawer = () => {
               <div>
                 {!drawerIsEmpty &&
                   <div className="items">
-                    {itemsChosen.map((item) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item) }} />)}
+                    {itemsChoosen.map((item) => <DrawerItem key={item.id} item={item} deleteFromCard={() => { deleteFromCard(item) }} />)}
                   </div>
                 }
               </div>

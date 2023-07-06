@@ -8,10 +8,11 @@ import Home from './pages/Home';
 import Favourite from './pages/Favourite';
 import CatalogItem from './components/CatalogItem';
 import AppContext from './AppContext';
+import useTotalPrice from './hooks/useTotalPrice';
 
 function App() {
   const [isOpened, setIsOpened] = useState(false);
-  const [itemsChosen, setItemsChosen] = useState([]);
+  const [itemsChoosen, setItemsChoosen] = useState([]);
   const [itemsLiked, setItemsLiked] = useState([]);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,23 +30,9 @@ function App() {
       const itemsAtCardID = cardResponse.data.map(elem => elem.parentId);
       const likedItemsID = likedResponse.data.map(elem => elem.parentId)
 
-      setItemsChosen(cardResponse.data);
-      setItemsLiked(likedResponse.data.map(elem => {
-        const itemAtCard = itemsAtCardID.includes(elem.parentId);
-        const itemLiked = likedItemsID.includes(elem.parentId);
-        if (itemAtCard && itemLiked) return { ...elem, atCard: true, liked: true };
-        if (!itemAtCard && itemLiked) return { ...elem, liked: true, atCard: false };
-        if (itemAtCard && !itemLiked) return { ...elem, atCard: true, liked: false };
-        return elem;
-      }));
-      setItems(itemsResponse.data.map(elem => {
-        const itemAtCard = itemsAtCardID.includes(elem.id);
-        const itemLiked = likedItemsID.includes(elem.id);
-        if (itemAtCard && itemLiked) return { ...elem, atCard: true, liked: true };
-        if (!itemAtCard && itemLiked) return { ...elem, liked: true, atCard: false };
-        if (itemAtCard && !itemLiked) return { ...elem, atCard: true, liked: false };
-        return elem
-      }));
+      setItemsChoosen(cardResponse.data);
+      setItemsLiked(likedResponse.data.map(elem => setItemsLikedChoosen(elem.parentId, itemsAtCardID, likedItemsID, elem)));
+      setItems(itemsResponse.data.map(elem => setItemsLikedChoosen(elem.id, itemsAtCardID, likedItemsID, elem)));
       setTotalPrice(() => {
         const costsAtCard = cardResponse.data.map(e => e.cost);
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0);
@@ -53,6 +40,15 @@ function App() {
     }
     fetch();
   }, [])
+
+  function setItemsLikedChoosen (id, itemsAtCardID, likedItemsID, elem){
+    const itemAtCard = itemsAtCardID.includes(id);
+    const itemLiked = likedItemsID.includes(id);
+    if (itemAtCard && itemLiked) return { ...elem, atCard: true, liked: true };
+    if (!itemAtCard && itemLiked) return { ...elem, liked: true, atCard: false };
+    if (itemAtCard && !itemLiked) return { ...elem, atCard: true, liked: false };
+    return elem;
+  }
 
   function handleCardClick(e) {
     if (!e.target.closest('.drawer')) {
@@ -79,61 +75,63 @@ function App() {
 
   function addToCard(item, id) {
     setOrdered(false)
-    const isFavourite = item.parentId;
-    const alreadyAtCard = itemsChosen.find(elem => +elem.parentId === +id);
+    const alreadyAtCard = itemsChoosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
       setTotalPrice(() => {
-        const costsAtCard = itemsChosen.map(e => e.cost);
+        const costsAtCard = itemsChoosen.map(e => e.cost);
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
       })
-            itemsChosen.map(elem => +elem.parentId === +id ? axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`) : null);
-      !isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
-      isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem)) : null;
-      setItemsChosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
+      itemsChoosen.map(elem => +elem.parentId === +id && axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`));
+      setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem));
+      setItemsChoosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
       console.log(Number(item.cost))
     }
     else {
       setTotalPrice(() => {
-        const costsAtCard = itemsChosen.map(e => e.cost);
+        const costsAtCard = itemsChoosen.map(e => e.cost);
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0) + +item.cost;
       })
-      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', { ...item, parentId: id }).then(res => setItemsChosen(prevItems => [...prevItems, res.data]))
+      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', { ...item, parentId: id, atCard: true }).then(res => setItemsChoosen(prevItems => [...prevItems, res.data]))
       setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: !elem.atCard } : elem));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
     }
   }
   
   function addToFavourite(item, id) {
-    const isFavourite = item.parentId;
     const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +id);
     if (alreadyLiked) {
-      itemsLiked.map(elem => +elem.parentId === +id ? axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`) : null);
-      isFavourite ? setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, liked: !elem.liked } : elem)) : null;
+      itemsLiked.map(elem => +elem.parentId === +id && axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`));
+      setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, liked: !elem.liked } : elem));
       setItemsLiked(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
     }
     else {
+      addToCardFav(setItems, 'https://649ee36b245f077f3e9d0c98.mockapi.io/liked', item, id)
       axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/liked', { ...item, parentId: id, liked: true }).then(res => setItemsLiked(prevItems => [...prevItems, res.data]))
       setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
     }
   }
 
+  function addToCardFav(set, link, item, id){
+    
+  }
+
   function deleteFromCard(item) {
-    setItemsChosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
+    setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
     setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? { ...elem, atCard: !elem.atCard } : elem));
     axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
     setTotalPrice(() => {
-      const costsAtCard = itemsChosen.map(e => e.cost);
+      const costsAtCard = itemsChoosen.map(e => e.cost);
       return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
     })  
   }
 
   return (
     <AppContext.Provider value={{
-      items, itemsChosen, itemsLiked, setIsOpened, isOpened, totalPrice,
+      items, itemsChoosen, itemsLiked, setIsOpened, isOpened, totalPrice,
       handleCardClick, deleteFromCard, renderItems, handleChange,
-      setItemsChosen, setItems, setItemsLiked, setTotalPrice,
+      setItemsChoosen, setItems, setItemsLiked, setTotalPrice,
       ordered, setOrdered
     }}>
       <div className='wrapper'>

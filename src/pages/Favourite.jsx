@@ -8,6 +8,7 @@ import Info from '../components/Info'
 const Favourite = () => {
     const {renderItems, handleChange, inputSearch, itemsLiked} = useContext(AppContext);
 
+    
     return (
         <div className='catalog'>
             <div className="catalog__top">

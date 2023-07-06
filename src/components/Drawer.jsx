@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import AppContext from '../AppContext';
 import CloseDeleteIcon from './CloseDeleteIcon';
 import DrawerItem from './DrawerItem'
@@ -10,6 +10,7 @@ import order from '../assets/icons/order.png'
 const Drawer = () => {
   const { itemsChoosen, isOpened, setIsOpened, handleCardClick, deleteFromCard, ordered } = useContext(AppContext);
   const drawerIsEmpty = itemsChoosen.length === 0;
+  const [orderID, setOrderID] = useState(1)
 
   return (
     <>
@@ -34,7 +35,7 @@ const Drawer = () => {
             <div>
               {ordered ? 
                 <div>
-                <Info title='Заказ оформлен!' subtext='Ваш заказ #18 скоро будет передан курьерской доставке'  src={order}/>
+                <Info title='Заказ оформлен!' subtext={`Ваш заказ ${orderID} скоро будет передан курьерской доставке`}  src={order}/>
               </div>
               :
                 (drawerIsEmpty && <div>
@@ -42,7 +43,7 @@ const Drawer = () => {
                 </div>)
                 }
             </div>
-            <MakeOrder />
+            <MakeOrder orderID={orderID} setOrderID={setOrderID}/>
           </div>
         </div>}
     </>

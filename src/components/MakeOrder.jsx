@@ -3,19 +3,27 @@ import { useContext, useState } from 'react'
 import AppContext from '../AppContext';
 import MyButton from './UI/button/MyButton';
 
-const MakeOrder = () => {
-    const { totalPrice, itemsChoosen, setItemsChoosen, setItems, setItemsLiked, items, setTotalPrice, setOrdered } = useContext(AppContext);
+const MakeOrder = ({ orderID, setOrderID }) => {
+    const { totalPrice, itemsChoosen, setItemsChoosen, setItems, setItemsLiked, setTotalPrice, setOrdered } = useContext(AppContext);
     const itemsAtCard = itemsChoosen.length;
 
-    function sentOrder(itemsToOrder) {
-        axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/order', itemsToOrder).then(setOrdered(true));
-        for (let i = 0; i < itemsChoosen.length; i++) {
-            axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${itemsChoosen[i].id}`);
+    async function sentOrder(itemsToOrder) {
+        try {
+            const { data } = await axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/order', {
+                items: itemsToOrder});
+              setOrderID(data.id);
+              console.log(orderID)
+              for (let i = 0; i < itemsChoosen.length; i++) {
+                  axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${itemsChoosen[i].id}`);
+              }
+              setOrdered(true);
+              setItemsChoosen([]);
+              setItems(prevItems => prevItems.map(e => ({ ...e, atCard: false })))
+              setItemsLiked(prevItems => prevItems.map(e => ({ ...e, atCard: false })));
+              setTotalPrice(0);
+        } catch (error) {
+            alert('Не удалось создать заказ')
         }
-        setItemsChoosen([]);
-        setItems(prevItems => prevItems.map(e => ({ ...e, atCard: false })))
-        setItemsLiked(prevItems => prevItems.map(e => ({ ...e, atCard: false })));
-        setTotalPrice(0);
     }
 
     return (

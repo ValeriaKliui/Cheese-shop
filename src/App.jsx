@@ -22,9 +22,11 @@ function App() {
 
   useEffect(() => {
     async function fetch() {
-      const cardResponse = await axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card');
-      const likedResponse = await axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/liked');
-      const itemsResponse = await axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems');
+      const [cardResponse, likedResponse, itemsResponse] = await Promise.all([
+        axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card'),
+        axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/liked'),
+        axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems')
+      ])  
       setIsLoading(false);
 
       const itemsAtCardID = cardResponse.data.map(elem => elem.parentId);
@@ -38,10 +40,11 @@ function App() {
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0);
       })
     }
-    fetch();
+
+      fetch();
   }, [])
 
-  function setItemsLikedChoosen (id, itemsAtCardID, likedItemsID, elem){
+  function setItemsLikedChoosen(id, itemsAtCardID, likedItemsID, elem) {
     const itemAtCard = itemsAtCardID.includes(id);
     const itemLiked = likedItemsID.includes(id);
     if (itemAtCard && itemLiked) return { ...elem, atCard: true, liked: true };
@@ -55,6 +58,7 @@ function App() {
       setIsOpened(false)
     }
   }
+
   function handleChange(e) {
     setInputSearch(e);
   }
@@ -74,57 +78,71 @@ function App() {
   }
 
   function addToCard(item, id) {
-    setOrdered(false)
+    setOrdered(false);
     const alreadyAtCard = itemsChoosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
       setTotalPrice(() => {
         const costsAtCard = itemsChoosen.map(e => e.cost);
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
       })
-      itemsChoosen.map(elem => +elem.parentId === +id && axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${elem.id}`));
-      setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: false } : elem));
-      setItemsChoosen(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
-      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
-      console.log(Number(item.cost))
+      removeAlreadyLikedCard(itemsChoosen, id, 'https://6499d13579fbe9bcf840095e.mockapi.io/card/', setItemsLiked, setItemsChoosen, setItems, 'atCard');
     }
     else {
       setTotalPrice(() => {
         const costsAtCard = itemsChoosen.map(e => e.cost);
         return costsAtCard.reduce((accum, curr) => accum + +curr, 0) + +item.cost;
       })
-      axios.post('https://6499d13579fbe9bcf840095e.mockapi.io/card', { ...item, parentId: id, atCard: true }).then(res => setItemsChoosen(prevItems => [...prevItems, res.data]))
-      setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, atCard: !elem.atCard } : elem));
-      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, atCard: !elem.atCard } : elem));
+      addToCardFav(setItems, setItemsChoosen, 'https://6499d13579fbe9bcf840095e.mockapi.io/card', item, id, 'atCard')
+      setItemsLiked(prevItems => makeOppositeValue(prevItems, 'parentId', id, 'atCard'))
     }
   }
-  
+
   function addToFavourite(item, id) {
     const alreadyLiked = itemsLiked.find(elem => +elem.parentId === +id);
     if (alreadyLiked) {
-      itemsLiked.map(elem => +elem.parentId === +id && axios.delete(`https://649ee36b245f077f3e9d0c98.mockapi.io/liked/${elem.id}`));
-      setItemsLiked(prevItems => prevItems.map(elem => +elem.parentId === +id ? { ...elem, liked: !elem.liked } : elem));
-      setItemsLiked(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
-      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
+      removeAlreadyLikedCard(itemsLiked, id, 'https://649ee36b245f077f3e9d0c98.mockapi.io/liked/', setItemsLiked, setItemsLiked, setItems, 'liked');
     }
     else {
-      addToCardFav(setItems, 'https://649ee36b245f077f3e9d0c98.mockapi.io/liked', item, id)
-      axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/liked', { ...item, parentId: id, liked: true }).then(res => setItemsLiked(prevItems => [...prevItems, res.data]))
-      setItems(prevItems => prevItems.map(elem => +elem.id === +id ? { ...elem, liked: !elem.liked } : elem));
+      addToCardFav(setItems, setItemsLiked, 'https://649ee36b245f077f3e9d0c98.mockapi.io/liked', item, id, 'liked')
     }
   }
 
-  function addToCardFav(set, link, item, id){
-    
+  function addToCardFav(setItems, setItemsArr, link, item, id, key) {
+    try {
+      axios.post(link, { ...item, parentId: id, [key]: true }).then(res => setItemsArr(prevItems => [...prevItems, res.data]))
+      setItems(prevItems => makeOppositeValue(prevItems, ['id'], id, key))
+    } catch (error) {
+      alert('Не удалось добавить')
+    }
+  }
+
+  function removeAlreadyLikedCard(itemsArr, id, link, setItemsArr1, setItemsArr2, setItemsArr3, key) {
+   try {
+    itemsArr.map(elem => +elem.parentId === +id && axios.delete(`${link}${elem.id}`));
+    setItemsArr1(prevItems => makeOppositeValue(prevItems, 'parentId', id, key));
+    setItemsArr2(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
+    setItemsArr3(prevItems => makeOppositeValue(prevItems, ['id'], id, key)); 
+   } catch (error) {
+    alert('Не удалось удалить')
+   }
   }
 
   function deleteFromCard(item) {
-    setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
-    setItems(prevItems => prevItems.map(elem => elem.id === item.parentId ? { ...elem, atCard: !elem.atCard } : elem));
-    axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
-    setTotalPrice(() => {
-      const costsAtCard = itemsChoosen.map(e => e.cost);
-      return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
-    })  
+    try {
+      setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
+      setItems(prevItems => makeOppositeValue(prevItems, 'id', 'parentId', 'atCard'))
+      axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
+      setTotalPrice(() => {
+        const costsAtCard = itemsChoosen.map(e => e.cost);
+        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
+      })     
+    } catch (error) {
+      alert('Не удалось удалить из корзины')
+    }
+  }
+
+  function makeOppositeValue(arrItems, indexElem, id, key) {
+    return arrItems.map(elem => +elem[indexElem] === +id ? { ...elem, [key]: !elem[key] } : elem);
   }
 
   return (

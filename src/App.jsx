@@ -8,24 +8,26 @@ import Home from './pages/Home';
 import Favourite from './pages/Favourite';
 import CatalogItem from './components/CatalogItem';
 import AppContext from './AppContext';
-import useTotalPrice from './hooks/useTotalPrice';
+import useCard from './hooks/useCard';
+import Account from './pages/Account';
 
 function App() {
   const [isOpened, setIsOpened] = useState(false);
-  const [itemsChoosen, setItemsChoosen] = useState([]);
-  const [itemsLiked, setItemsLiked] = useState([]);
   const [items, setItems] = useState([]);
+  const {itemsChoosen, setItemsChoosen, totalPrice} = useCard();
+  const [itemsLiked, setItemsLiked] = useState([]);
+  const [itemsOrdered, setItemsOrdered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [inputSearch, setInputSearch] = useState('');
-  const [totalPrice, setTotalPrice] = useState(0);
   const [ordered, setOrdered] = useState(false);
 
   useEffect(() => {
     async function fetch() {
-      const [cardResponse, likedResponse, itemsResponse] = await Promise.all([
+      const [cardResponse, likedResponse, itemsResponse, orderResponse] = await Promise.all([
         axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/card'),
         axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/liked'),
-        axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems')
+        axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems'),
+        axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/order')
       ])  
       setIsLoading(false);
 
@@ -33,17 +35,14 @@ function App() {
       const likedItemsID = likedResponse.data.map(elem => elem.parentId)
 
       setItemsChoosen(cardResponse.data);
+      setItemsOrdered(orderResponse.data)
       setItemsLiked(likedResponse.data.map(elem => setItemsLikedChoosen(elem.parentId, itemsAtCardID, likedItemsID, elem)));
       setItems(itemsResponse.data.map(elem => setItemsLikedChoosen(elem.id, itemsAtCardID, likedItemsID, elem)));
-      setTotalPrice(() => {
-        const costsAtCard = cardResponse.data.map(e => e.cost);
-        return costsAtCard.reduce((accum, curr) => accum + +curr, 0);
-      })
     }
 
       fetch();
   }, [])
-
+console.log(itemsOrdered[0].items)
   function setItemsLikedChoosen(id, itemsAtCardID, likedItemsID, elem) {
     const itemAtCard = itemsAtCardID.includes(id);
     const itemLiked = likedItemsID.includes(id);
@@ -81,17 +80,9 @@ function App() {
     setOrdered(false);
     const alreadyAtCard = itemsChoosen.find(elem => +elem.parentId === +id);
     if (alreadyAtCard) {
-      setTotalPrice(() => {
-        const costsAtCard = itemsChoosen.map(e => e.cost);
-        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
-      })
       removeAlreadyLikedCard(itemsChoosen, id, 'https://6499d13579fbe9bcf840095e.mockapi.io/card/', setItemsLiked, setItemsChoosen, setItems, 'atCard');
     }
     else {
-      setTotalPrice(() => {
-        const costsAtCard = itemsChoosen.map(e => e.cost);
-        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) + +item.cost;
-      })
       addToCardFav(setItems, setItemsChoosen, 'https://6499d13579fbe9bcf840095e.mockapi.io/card', item, id, 'atCard')
       setItemsLiked(prevItems => makeOppositeValue(prevItems, 'parentId', id, 'atCard'))
     }
@@ -129,39 +120,36 @@ function App() {
 
   function deleteFromCard(item) {
     try {
-      setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
-      setItems(prevItems => makeOppositeValue(prevItems, 'id', 'parentId', 'atCard'))
+    setItems(prevItems => makeOppositeValue(prevItems, 'id', 'parentId', 'atCard', item))
+    setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
       axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
-      setTotalPrice(() => {
-        const costsAtCard = itemsChoosen.map(e => e.cost);
-        return costsAtCard.reduce((accum, curr) => accum + +curr, 0) - +item.cost;
-      })     
     } catch (error) {
       alert('Не удалось удалить из корзины')
     }
   }
 
-  function makeOppositeValue(arrItems, indexElem, id, key) {
-    return arrItems.map(elem => +elem[indexElem] === +id ? { ...elem, [key]: !elem[key] } : elem);
+  function makeOppositeValue(arrItems, indexElem, id, key, item={}) {
+    if (id === 'parentId') return arrItems.map(elem => {
+     return  +elem[indexElem] === +item[id] ? { ...elem, [key]: !item[key] } : elem});
+    else return arrItems.map(elem => +elem[indexElem] === +id ? { ...elem, [key]: !elem[key] } : elem);
   }
 
   return (
     <AppContext.Provider value={{
       items, itemsChoosen, itemsLiked, setIsOpened, isOpened, totalPrice,
       handleCardClick, deleteFromCard, renderItems, handleChange,
-      setItemsChoosen, setItems, setItemsLiked, setTotalPrice,
-      ordered, setOrdered
+      setItemsChoosen, setItems, setItemsLiked, ordered, setOrdered,
+      itemsOrdered
     }}>
       <div className='wrapper'>
         <Header />
         <hr />
         <Drawer />
         <Routes>
-          <Route path="/" element={<Home />}
-          />
-          <Route path="/favourite" element={<Favourite />}
-          />
-        </Routes>
+          <Route path="/" element={<Home />}/>
+          <Route path="/favourite" element={<Favourite />}/>
+          <Route path="/account" element={<Account />}/>
+</Routes>
       </div>
     </AppContext.Provider>
   )

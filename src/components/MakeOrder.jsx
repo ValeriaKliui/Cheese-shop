@@ -4,13 +4,13 @@ import AppContext from '../AppContext';
 import MyButton from './UI/button/MyButton';
 
 const MakeOrder = ({ orderID, setOrderID }) => {
-    const { totalPrice, itemsChoosen, setItemsChoosen, setItems, setItemsLiked, setTotalPrice, setOrdered } = useContext(AppContext);
+    const { totalPrice, itemsChoosen, setItemsChoosen, setItems, setItemsLiked, setOrdered } = useContext(AppContext);
     const itemsAtCard = itemsChoosen.length;
 
     async function sentOrder(itemsToOrder) {
         try {
             const { data } = await axios.post('https://649ee36b245f077f3e9d0c98.mockapi.io/order', {
-                items: itemsToOrder});
+                items: itemsToOrder.map(elem=({...elem, atCard: false}))});
               setOrderID(data.id);
               console.log(orderID)
               for (let i = 0; i < itemsChoosen.length; i++) {
@@ -20,7 +20,6 @@ const MakeOrder = ({ orderID, setOrderID }) => {
               setItemsChoosen([]);
               setItems(prevItems => prevItems.map(e => ({ ...e, atCard: false })))
               setItemsLiked(prevItems => prevItems.map(e => ({ ...e, atCard: false })));
-              setTotalPrice(0);
         } catch (error) {
             alert('Не удалось создать заказ')
         }

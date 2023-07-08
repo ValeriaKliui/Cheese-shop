@@ -6,7 +6,6 @@ import ContentLoader from "react-content-loader"
 
 const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourite, loading }) => {
     const { isAccount } = useContext(AppContext);
-console.log(isAccount)
     return (
         <div className='catalog__item'>
             {loading ?

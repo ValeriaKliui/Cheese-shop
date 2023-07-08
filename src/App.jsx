@@ -14,7 +14,7 @@ import Account from './pages/Account';
 function App() {
   const [isOpened, setIsOpened] = useState(false);
   const [items, setItems] = useState([]);
-  const {itemsChoosen, setItemsChoosen, totalPrice} = useCard();
+  const { itemsChoosen, setItemsChoosen, totalPrice } = useCard();
   const [itemsLiked, setItemsLiked] = useState([]);
   const [itemsOrdered, setItemsOrdered] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,7 +29,7 @@ function App() {
         axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/liked'),
         axios.get('https://6499d13579fbe9bcf840095e.mockapi.io/cheeseItems'),
         axios.get('https://649ee36b245f077f3e9d0c98.mockapi.io/order')
-      ])  
+      ])
       setIsLoading(false);
 
       const itemsAtCardID = cardResponse.data.map(elem => elem.parentId);
@@ -40,8 +40,7 @@ function App() {
       setItemsLiked(likedResponse.data.map(elem => setItemsLikedChoosen(elem.parentId, itemsAtCardID, likedItemsID, elem)));
       setItems(itemsResponse.data.map(elem => setItemsLikedChoosen(elem.id, itemsAtCardID, likedItemsID, elem)));
     }
-
-      fetch();
+    fetch();
   }, [])
 
   function setItemsLikedChoosen(id, itemsAtCardID, likedItemsID, elem) {
@@ -109,29 +108,30 @@ function App() {
   }
 
   function removeAlreadyLikedCard(itemsArr, id, link, setItemsArr1, setItemsArr2, setItemsArr3, key) {
-   try {
-    itemsArr.map(elem => +elem.parentId === +id && axios.delete(`${link}${elem.id}`));
-    setItemsArr1(prevItems => makeOppositeValue(prevItems, 'parentId', id, key));
-    setItemsArr2(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
-    setItemsArr3(prevItems => makeOppositeValue(prevItems, ['id'], id, key)); 
-   } catch (error) {
-    alert('Не удалось удалить')
-   }
+    try {
+      itemsArr.map(elem => +elem.parentId === +id && axios.delete(`${link}${elem.id}`));
+      setItemsArr1(prevItems => makeOppositeValue(prevItems, 'parentId', id, key));
+      setItemsArr2(prevItems => prevItems.filter(elem => +elem.parentId !== +id));
+      setItemsArr3(prevItems => makeOppositeValue(prevItems, ['id'], id, key));
+    } catch (error) {
+      alert('Не удалось удалить')
+    }
   }
 
   function deleteFromCard(item) {
     try {
-    setItems(prevItems => makeOppositeValue(prevItems, 'id', 'parentId', 'atCard', item))
-    setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
+      setItems(prevItems => makeOppositeValue(prevItems, 'id', 'parentId', 'atCard', item))
+      setItemsChoosen(prevItems => prevItems.filter(elem => elem.id !== item.id))
       axios.delete(`https://6499d13579fbe9bcf840095e.mockapi.io/card/${item.id}`);
     } catch (error) {
       alert('Не удалось удалить из корзины')
     }
   }
 
-  function makeOppositeValue(arrItems, indexElem, id, key, item={}) {
+  function makeOppositeValue(arrItems, indexElem, id, key, item = {}) {
     if (id === 'parentId') return arrItems.map(elem => {
-     return  +elem[indexElem] === +item[id] ? { ...elem, [key]: !item[key] } : elem});
+      return +elem[indexElem] === +item[id] ? { ...elem, [key]: !item[key] } : elem
+    });
     else return arrItems.map(elem => +elem[indexElem] === +id ? { ...elem, [key]: !elem[key] } : elem);
   }
 
@@ -147,10 +147,10 @@ function App() {
         <hr />
         <Drawer />
         <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/favourite" element={<Favourite />}/>
-          <Route path="/account" element={<Account />}/>
-</Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/favourite" element={<Favourite />} />
+          <Route path="/account" element={<Account />} />
+        </Routes>
       </div>
     </AppContext.Provider>
   )

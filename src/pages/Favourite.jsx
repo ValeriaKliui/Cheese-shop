@@ -6,9 +6,8 @@ import no_fav from '../assets/icons/no-fav.png';
 import Info from '../components/Info'
 
 const Favourite = () => {
-    const {renderItems, handleChange, inputSearch, itemsLiked} = useContext(AppContext);
-
-    
+    const {renderItems, handleChange, inputSearch, itemsLiked, setIsAccount} = useContext(AppContext);
+    setIsAccount(false)
     return (
         <div className='catalog'>
             <div className="catalog__top">

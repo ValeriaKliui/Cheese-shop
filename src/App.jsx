@@ -20,6 +20,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [inputSearch, setInputSearch] = useState('');
   const [ordered, setOrdered] = useState(false);
+  const [isAccount, setIsAccount] = useState(false);
 
   useEffect(() => {
     async function fetch() {
@@ -42,7 +43,7 @@ function App() {
 
       fetch();
   }, [])
-console.log(itemsOrdered[0].items)
+
   function setItemsLikedChoosen(id, itemsAtCardID, likedItemsID, elem) {
     const itemAtCard = itemsAtCardID.includes(id);
     const itemLiked = likedItemsID.includes(id);
@@ -139,7 +140,7 @@ console.log(itemsOrdered[0].items)
       items, itemsChoosen, itemsLiked, setIsOpened, isOpened, totalPrice,
       handleCardClick, deleteFromCard, renderItems, handleChange,
       setItemsChoosen, setItems, setItemsLiked, ordered, setOrdered,
-      itemsOrdered
+      itemsOrdered, setItemsOrdered, setIsAccount, isAccount
     }}>
       <div className='wrapper'>
         <Header />

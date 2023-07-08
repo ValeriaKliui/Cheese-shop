@@ -1,8 +1,12 @@
 import AddIcon from './AddIcon'
+import { useContext } from 'react'
+import AppContext from '../AppContext';
 import FavouriteIcon from './FavouriteIcon'
 import ContentLoader from "react-content-loader"
 
 const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourite, loading }) => {
+    const { isAccount } = useContext(AppContext);
+console.log(isAccount)
     return (
         <div className='catalog__item'>
             {loading ?
@@ -23,7 +27,7 @@ const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourit
                 :
                 <>
                     <div className="item__photo">
-                        <FavouriteIcon addToFavourite={addToFavourite} liked={liked} />
+                    {!isAccount && <FavouriteIcon addToFavourite={addToFavourite} liked={liked} /> }
                         <img src={src} alt="" className='item__img' />
                     </div>
                     <p className="text item__title">
@@ -38,7 +42,7 @@ const CatalogItem = ({ title, src, cost, addToCard, atCard, liked, addToFavourit
                                 {cost} BYN
                             </p>
                         </div>
-                        <AddIcon addToCard={addToCard} atCard={atCard} />
+                       {!isAccount && <AddIcon addToCard={addToCard} atCard={atCard} />} 
                     </div>
                 </>
             }

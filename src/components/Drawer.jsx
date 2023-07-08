@@ -35,7 +35,7 @@ const Drawer = () => {
             <div>
               {ordered ? 
                 <div>
-                <Info title='Заказ оформлен!' subtext={`Ваш заказ ${orderID} скоро будет передан курьерской доставке`}  src={order}/>
+                <Info title='Заказ оформлен!' subtext={`Ваш заказ #${orderID} скоро будет передан курьерской доставке`}  src={order}/>
               </div>
               :
                 (drawerIsEmpty && <div>

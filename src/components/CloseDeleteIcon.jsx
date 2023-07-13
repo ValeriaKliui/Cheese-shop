@@ -1,13 +1,20 @@
-const CloseDeleteIcon = ({deleteFromCard, isClosed, setIsOpened}) => {
+const CloseDeleteIcon = ({
+  deleteFromCard,
+  isClosed,
+  setIsOpened,
+}) => {
   return (
-    <div className={
-      isClosed ?
-      ['close_delete-icon', 'close'].join(' ') 
-      : 'close_delete-icon'
+    <div
+      className={
+        isClosed
+          ? ['close_delete-icon', 'close'].join(' ')
+          : 'close_delete-icon'
       }
-      onClick={()=>isClosed ? setIsOpened(false) : deleteFromCard()}>
-      </div>
-  )
-}
+      onClick={() =>
+        isClosed ? setIsOpened(false) : deleteFromCard()
+      }
+    ></div>
+  );
+};
 
-export default CloseDeleteIcon
+export default CloseDeleteIcon;

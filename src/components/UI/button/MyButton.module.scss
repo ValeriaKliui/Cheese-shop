@@ -1,17 +1,17 @@
 @import '../../../assets/vars.scss';
 
 .MyButton {
-    background-color: $bright;
-    width: 100%;
-    height: 55px;
-    border-radius: 18px;
-    border: none;
-    color: $light-border;
-    cursor: pointer;
-    transition: 0.2s all ease;
-    max-width: 330px;
-    align-self: center;
-    &:hover {
-        background-color: $bright-dark;
-    }
+  background-color: $bright;
+  width: 100%;
+  height: 55px;
+  border-radius: 18px;
+  border: none;
+  color: $light-border;
+  cursor: pointer;
+  transition: 0.2s all ease;
+  max-width: 330px;
+  align-self: center;
+  &:hover {
+    background-color: $bright-dark;
+  }
 }
